@@ -1,0 +1,10 @@
+.vs/
+.vscode/
+
+x64/
+x32/
+
+LogicalInferenceEngine.sln
+LogicalInferenceEngine.vcxproj
+LogicalInferenceEngine.vcxproj.filters
+LogicalInferenceEngine.vcxproj.user

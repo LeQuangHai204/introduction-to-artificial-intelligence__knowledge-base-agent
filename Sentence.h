@@ -57,6 +57,7 @@ public:
 	bool setValue(bool v)
 	{
 		value = v;
+		return true;
 	}
 
 	virtual bool isSymbol() const

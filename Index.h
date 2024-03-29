@@ -5,4 +5,4 @@
 #include "Not.h"
 #include "Imply.h"
 #include "Bicondition.h"
-#include "Constants.h"
+#include "StringToSymbol.h"

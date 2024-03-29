@@ -5,9 +5,18 @@
 
 class Bicondition : public Symbol
 {
+private:
+	Sentence* sentences[2];
+
 public:
 	Bicondition(Sentence* s1, Sentence* s2) :
-		Symbol(std::vector{ s1, s2 }) { }
+		sentences { s1, s2 } 
+	{
+		if (!s1 || !s2)
+		{
+			throw std::invalid_argument("Null sentence in Bicondition constructor");
+		}
+	}
 
 	std::string getDescription() const override
 	{
@@ -23,15 +32,5 @@ public:
 	bool getValue() const override
 	{
 		return sentences[0]->getValue() == sentences[1]->getValue();
-	}
-
-	bool equals(const Symbol& other) const override
-	{
-		if (dynamic_cast<const Bicondition*>(&other))
-		{
-			return Symbol::equals(other);
-		}
-
-		return false;
 	}
 };

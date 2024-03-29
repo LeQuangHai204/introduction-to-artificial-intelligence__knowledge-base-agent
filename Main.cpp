@@ -6,38 +6,27 @@
 #include <stdexcept>
 #include <algorithm>
 #include <regex>
-#include <unordered_set>
 #include <stack>
 
+#include "Constants.h"
 #include "Index.h"
-
-std::unordered_set<Sentence> tokenize(const std::string& str)
-{
-    std::unordered_set<Sentence> sentences;
-    size_t prev = 0;
-    size_t pos;
-    while ((pos = str.find_first_of("~", prev)) != std::string::npos)
-    {
-        if (pos > prev)
-        {
-            std::string token = str.substr(prev, pos - prev);
-            sentences.emplace(token);
-        }
-        prev = pos + 1;
-    }
-
-    if (prev < str.length())
-    {
-        std::string lastToken = str.substr(prev, std::string::npos);
-        sentences.emplace(lastToken);
-    }
-
-    return sentences;
-}
-
 
 int main(int argc, char* argv[])
 {
+#ifdef TEST
+    Sentence* pureSen0 = new Sentence("It rains");
+    Sentence* pureSen1 = new Sentence("It is cloudy");
+    Sentence* and0 = new And({ pureSen0, pureSen1 });
+    Sentence* and1 = new And({ pureSen1, pureSen0 });
+    Sentence* or0 = new Or({ pureSen0, pureSen1 });
+    Sentence* or1 = new Or({ pureSen1, pureSen0 });
+    Sentence* not0 = new Not(pureSen0);
+    Sentence* not1 = new Not(pureSen1);
+    std::cout << "Compare: " << ((*or0) == (*or1));
+    return 0;
+#endif // TEST
+
+
 #ifdef RUN_ON_VISUALSTUDIO
     std::ifstream inputFile("test_genericKB.txt");
 #endif // RUN_ON_VISUALSTUDIO
@@ -106,14 +95,19 @@ int main(int argc, char* argv[])
         query.end());
 
 #ifdef DEVELOP
+
     std::cout << "Extracted Clauses:" << std::endl;
     for (const std::string& clause : knowledge) {
         std::cout << clause << std::endl;
+        auto sentence = StringToSymbol::convert(clause);
     }
     std::cout << "Extracted Query:" << std::endl;        
     std::cout << query << std::endl;
+
+    std::cout << "Atomic Knowledge:" << std::endl;
+    for (const Sentence& elem : StringToSymbol::atomicSentences) {
+        std::cout << elem.getDescription() << " ";
+    }
 #endif // DEVELOP
-
-
 }
 

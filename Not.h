@@ -5,25 +5,38 @@
 
 class Not : public Symbol
 {
+private:
+	Sentence* sentence;
+
 public:
-	Not(Sentence* sentence) : Symbol(std::vector{ sentence }) { }
+	Not(Sentence* sentence) : sentence(sentence) 
+	{
+		if (!sentence)
+		{
+			throw std::invalid_argument("Null sentence in Not constructor");
+		}
+	}
 
 	std::string getDescription() const override
 	{
-		if (sentences[0]->isSymbol()) return
-			"~ (" + sentences[0]->getDescription() + ")";
-		return "~ " + sentences[0]->getDescription();
+		if (sentence->isSymbol()) return
+			"~ (" + sentence->getDescription() + ")";
+		return "~ " + sentence->getDescription();
 	}
 
 	bool getValue() const override
 	{
-		return !sentences[0]->getValue();
+		return !sentence->getValue();
 	}
 
-	bool equals(const Symbol& other) const override
+	bool operator==(const Sentence& other) const override
 	{
-		// Check if the other Symbol is of type And
 		const Not* notSymbol = dynamic_cast<const Not*>(&other);
-		return notSymbol && sentences[0] == notSymbol->sentences[0];
+		return notSymbol && operator==(*notSymbol);
+	}
+
+	bool operator==(const Not& other) const
+	{
+		return sentence == other.sentence;
 	}
 };

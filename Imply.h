@@ -5,33 +5,33 @@
 
 class Imply : public Symbol
 {
+private:
+	Sentence* antecedent;
+	Sentence* consequence;
+
 public:
-	Imply(Sentence* antecedent, Sentence* consequence) : 
-		Symbol(std::vector{ antecedent, consequence }) { }
+	Imply(Sentence* antecedent, Sentence* consequence) :
+		antecedent(antecedent), consequence(consequence)
+	{
+		if (!antecedent || !consequence)
+		{
+			throw std::invalid_argument("Null sentence in Imply constructor");
+		}
+	}
 
 	std::string getDescription() const override
 	{
-		return (sentences[0]->isSymbol() ? "(" : "") 
-			+ sentences[0]->getDescription()
-			+ (sentences[0]->isSymbol() ? ")" : "")
+		return (antecedent->isSymbol() ? "(" : "") 
+			+ antecedent->getDescription()
+			+ (antecedent->isSymbol() ? ")" : "")
 			+ " => " 
-			+ (sentences[1]->isSymbol() ? "(" : "")
-			+ sentences[1]->getDescription()
-			+ (sentences[1]->isSymbol() ? ")" : "");
+			+ (consequence->isSymbol() ? "(" : "")
+			+ consequence->getDescription()
+			+ (consequence->isSymbol() ? ")" : "");
 	}
 
 	bool getValue() const override
 	{
-		return !sentences[0]->getValue() || sentences[1]->getValue();
-	}
-
-	bool equals(const Symbol& other) const override
-	{
-		if (dynamic_cast<const Imply*>(&other))
-		{
-			return Symbol::equals(other);
-		}
-
-		return false;
+		return !antecedent->getValue() || consequence->getValue();
 	}
 };

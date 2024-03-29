@@ -7,9 +7,12 @@
 
 class And : public Symbol
 {
+private:
+	std::vector<Sentence*> sentences;
+
 public:
 	And(std::vector<Sentence*>&& sentences) : 
-		Symbol(std::move(sentences)) 
+		sentences(std::move(sentences)) 
 	{
 		if (this->sentences.size() < 2) throw std::domain_error(
 			"And clause requires at least 2 sentences");
@@ -45,20 +48,21 @@ public:
 		return true;
 	}
 
-	bool equals(const Symbol& other) const override
+	bool operator==(const Sentence& other) const override
 	{
 		const And* andSymbol = dynamic_cast<const And*>(&other);
-		if (!andSymbol)
-		{
-			return false;
-		}
+		if (!andSymbol) return false;
+		return sameTypeCompare(*andSymbol);
+	}
 
+	bool sameTypeCompare(const And& other) const
+	{
 		for (Sentence* sentence1 : sentences)
 		{
 			bool found = false;
-			for (Sentence* sentence2 : andSymbol->sentences)
+			for (Sentence* sentence2 : other.sentences)
 			{
-				if (sentence1 == sentence2) 
+				if (sentence1 == sentence2)
 				{
 					found = true;
 					break;
@@ -70,7 +74,7 @@ public:
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
 };

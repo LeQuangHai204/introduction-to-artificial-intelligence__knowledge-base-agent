@@ -1,16 +1,22 @@
 #pragma once
 
+#include <set>
+
 #include "Symbol.h"
 #include "Constants.h"
 
 class Or : public Symbol
 {
+private:
+	std::set<Sentence*> sentences;
 public:
-	Or(std::vector<Sentence*>&& sentences) : 
-		Symbol(std::move(sentences)) 
+	Or(std::set<Sentence*>&& sentences) : 
+		sentences(std::move(sentences))
 	{
-		if (this->sentences.size() < 2) throw std::domain_error(
-			"Or clause requires at least 2 sentences");
+		if (this->sentences.size() < 2) 
+		{
+			throw std::invalid_argument("Or clause requires at least 2 sentences");
+		}
 	}
 
 	std::string getDescription() const override
@@ -43,33 +49,14 @@ public:
 		return false;
 	}
 
-	bool equals(const Symbol& other) const override
+	bool operator==(const Sentence& other) const override
 	{
-		// Check if the other Symbol is of type And
 		const Or* orSymbol = dynamic_cast<const Or*>(&other);
-		if (!orSymbol)
-		{
-			return false;
-		}
+		return orSymbol && operator==(*orSymbol);
+	}
 
-		for (Sentence* sentence1 : sentences)
-		{
-			bool found = false;
-			for (Sentence* sentence2 : orSymbol->sentences)
-			{
-				if (sentence1 == sentence2)
-				{
-					found = true;
-					break;
-				}
-			}
-
-			if (!found)
-			{
-				return false;
-			}
-		}
-
-		return true;
+	bool operator==(const Or& other) const
+	{
+		return sentences == other.sentences;
 	}
 };

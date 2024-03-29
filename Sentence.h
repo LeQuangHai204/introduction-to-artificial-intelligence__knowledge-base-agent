@@ -1,6 +1,5 @@
 #pragma once
 
-#include <vector>
 #include <string>
 #include <iostream>
 
@@ -13,6 +12,10 @@ class Sentence
 private:
 	const std::string description;
 	bool value;
+
+protected:
+	Sentence() : description(""), value(true)
+	{ }
 
 public:
 	// lvalue constructor
@@ -54,9 +57,9 @@ public:
 		return value;
 	}
 
-	bool setValue(bool v)
+	bool setValue(bool val)
 	{
-		value = v;
+		value = val;
 	}
 
 	virtual bool isSymbol() const
@@ -67,8 +70,7 @@ public:
 
 namespace std
 {
-	template<>
-	struct hash<Sentence>
+	template<> struct hash<Sentence>
 	{
 		size_t operator()(const Sentence& key) const
 		{

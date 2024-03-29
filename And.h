@@ -8,10 +8,10 @@
 class And : public Symbol
 {
 private:
-	std::vector<Sentence*> sentences;
+	std::set<Sentence*> sentences;
 
 public:
-	And(std::vector<Sentence*>&& sentences) : 
+	And(std::set<Sentence*>&& sentences) : 
 		sentences(std::move(sentences)) 
 	{
 		if (this->sentences.size() < 2) throw std::domain_error(
@@ -51,30 +51,11 @@ public:
 	bool operator==(const Sentence& other) const override
 	{
 		const And* andSymbol = dynamic_cast<const And*>(&other);
-		if (!andSymbol) return false;
-		return sameTypeCompare(*andSymbol);
+		return andSymbol && operator==(*andSymbol);
 	}
 
-	bool sameTypeCompare(const And& other) const
+	bool operator==(const And& other) const
 	{
-		for (Sentence* sentence1 : sentences)
-		{
-			bool found = false;
-			for (Sentence* sentence2 : other.sentences)
-			{
-				if (sentence1 == sentence2)
-				{
-					found = true;
-					break;
-				}
-			}
-
-			if (!found)
-			{
-				return false;
-			}
-		}
-
-		return true;
+		return sentences == other.sentences;
 	}
 };

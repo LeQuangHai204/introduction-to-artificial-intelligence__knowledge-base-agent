@@ -34,4 +34,16 @@ public:
 	{
 		return !antecedent->getValue() || consequence->getValue();
 	}
+
+	bool operator==(const Sentence& other) const override
+	{
+		const Imply* implySymbol = dynamic_cast<const Imply*>(&other);
+		return implySymbol && operator==(*implySymbol);
+	}
+
+	bool operator==(const Imply& other) const
+	{
+		return antecedent == other.antecedent 
+			&& consequence == other.consequence;
+	}
 };

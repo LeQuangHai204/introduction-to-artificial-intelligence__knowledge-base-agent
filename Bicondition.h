@@ -33,4 +33,18 @@ public:
 	{
 		return sentences[0]->getValue() == sentences[1]->getValue();
 	}
+
+	bool operator==(const Sentence& other) const override
+	{
+		const Bicondition* biconditionSymbol = dynamic_cast<const Bicondition*>(&other);
+		return biconditionSymbol && operator==(*biconditionSymbol);
+	}
+
+	bool operator==(const Bicondition& other) const
+	{
+		return (sentences[0] == other.sentences[0]
+			&& sentences[1] == other.sentences[1])
+			|| (sentences[1] == other.sentences[0]
+			&& sentences[0] == other.sentences[1]);
+	}
 };

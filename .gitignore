@@ -8,3 +8,4 @@ x32/
 *.vcxproj
 *.vcxproj.filters
 *.vcxproj.user
+*.exe

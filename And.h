@@ -1,51 +1,65 @@
 #pragma once
 
-#include <vector>
+#include <set>
+#include <numeric>
 
 #include "Symbol.h"
 #include "Constants.h"
 
 class And : public Symbol
 {
-private:
-	std::set<Sentence*> sentences;
-
 public:
-	And(std::set<Sentence*>&& sentences) : 
-		sentences(std::move(sentences)) 
+	std::set<const Sentence*> sentences;
+
+	And(std::set<const Sentence*>&& sentences) : Symbol
+		(
+			std::accumulate(sentences.begin(), sentences.end(), std::string(),
+				[](std::string&& result, const Sentence* sentence)
+				{
+					if (!sentence) throw std::domain_error("Symbol contain NULL sentence");
+					if (sentence->isSymbol()) result += "(";
+					result += sentence->getDescription();
+					if (sentence->isSymbol()) result += ")";
+					result += "&&";
+					return std::move(result);
+				}
+			) + std::string("\b\b  \b")
+		),
+		sentences(std::move(sentences))
 	{
 		if (this->sentences.size() < 2) throw std::domain_error(
 			"And clause requires at least 2 sentences");
 	}
 
-	std::string getDescription() const override
+	~And()
 	{
-		std::string result = "";
-		for (Sentence* sentence : sentences)
-		{
-			if (!sentence) throw std::domain_error(
-				"Symbol contain NULL sentence");
-			if (sentence->isSymbol()) result += "(";
-			result += sentence->getDescription();
-			if (sentence->isSymbol()) result += ")";
-			result += " && ";
-		}
-
-		result.erase(result.size() - 4);
-		return result;
+#ifdef TEST
+		std::cout << "And deleting: " << getDescription() << "\n";
+#endif
 	}
 
-	bool getValue() const override
+	bool evaluate() const override
 	{
-		for (Sentence* sentence : sentences)
+		for (const Sentence* sentence : sentences)
 		{
-			if (!sentence->getValue())
+			if (!sentence->evaluate())
 			{
 				return false;
 			}
 		}
 
 		return true;
+	}
+
+	size_t atomicCount() const override
+	{
+		size_t result = 0;
+		for (const Sentence* sentence : sentences)
+		{
+			result += sentence->atomicCount();
+		}
+
+		return result;
 	}
 
 	bool operator==(const Sentence& other) const override

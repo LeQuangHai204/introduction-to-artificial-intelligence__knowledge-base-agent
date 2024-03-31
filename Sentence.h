@@ -11,14 +11,14 @@ class Sentence
 {
 private:
     const std::string description;
-    bool value;
-
-protected:
-    Sentence() : description(""), value(true) {}
+    mutable bool value;
 
 public:
+    // no default constructor
+    Sentence() = delete;
+
     // lvalue constructor
-    Sentence(const std::string& desc) : description(desc), value(true)
+    Sentence(const std::string& desc) : description(desc), value(false)
     {
 #ifdef TEST
         if (description != "")
@@ -28,7 +28,7 @@ public:
     }
 
     // rvalue constructor
-    Sentence(std::string&& desc) : description(std::move(desc)), value(true)
+    Sentence(std::string&& desc) : description(std::move(desc)), value(false)
     {
 #ifdef TEST
         if (description != "")
@@ -37,7 +37,18 @@ public:
 #endif  // TEST
     }
 
-    virtual ~Sentence() {}
+    // copy constructor
+    Sentence(const Sentence& other) : 
+        description(other.description), value(other.value)
+    { }
+
+    // virtual destructor
+    virtual ~Sentence()
+    {
+#ifdef TEST
+        std::cout << "Delete sentence " << description << "\n";
+#endif  // TEST  
+    }
 
     virtual bool operator==(const Sentence& other) const
     {
@@ -49,20 +60,30 @@ public:
         return !(description == other.description);
     }
 
-    virtual std::string getDescription() const
+    bool operator<(const Sentence& other) const
+    {
+        return atomicCount() < other.atomicCount();
+    }
+
+    const std::string& getDescription() const
     {
         return description;
     }
 
-    virtual bool getValue() const
+    virtual bool evaluate() const
     {
         return value;
     }
 
-    bool setValue(bool val)
+    bool setValue(bool val) const 
     {
         value = val;
         return true;
+    }
+
+    virtual size_t atomicCount() const
+    {
+        return 1;
     }
 
     virtual bool isSymbol() const
@@ -73,14 +94,61 @@ public:
 
 namespace std
 {
-template <>
-struct hash<Sentence>
-{
-    size_t operator()(const Sentence& key) const
+    template <>
+    struct hash<const Sentence*>
     {
-        // Define a proper hash function for Symbol objects
-        // For example, you can combine the hash values of its member variables
-        return hash<std::string>()(key.getDescription());
-    }
-};
-}  // namespace std
+        size_t operator()(const Sentence* key) const
+        {
+            return hash<std::string>()(key->getDescription());
+        }
+    };
+
+    template <>
+    struct equal_to<const Sentence*>
+    {
+        bool operator()(const Sentence* lhs, const Sentence* rhs) const
+        {
+            return *lhs == *rhs;
+        }
+    };
+
+    template <>
+    struct less<const Sentence*>
+    {
+        bool operator()(const Sentence* lhs, const Sentence* rhs) const
+        {
+            if (lhs->atomicCount() < rhs->atomicCount()) return true;
+            else if (lhs->atomicCount() > rhs->atomicCount()) return false;
+            else return lhs->getDescription() < rhs->getDescription(); 
+        }
+    };
+
+    template <>
+    struct hash<Sentence*>
+    {
+        size_t operator()(const Sentence* key) const
+        {
+            return hash<std::string>()(key->getDescription());
+        }
+    };
+
+    template <>
+    struct equal_to<Sentence*>
+    {
+        bool operator()(const Sentence* lhs, const Sentence* rhs) const
+        {
+            return *lhs == *rhs;
+        }
+    };
+
+    template <>
+    struct less<Sentence*>
+    {
+        bool operator()(const Sentence* lhs, const Sentence* rhs) const
+        {
+            if (lhs->atomicCount() < rhs->atomicCount()) return true;
+            else if (lhs->atomicCount() > rhs->atomicCount()) return false;
+            else return lhs->getDescription() < rhs->getDescription();
+        }
+    };
+}

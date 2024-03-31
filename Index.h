@@ -5,4 +5,6 @@
 #include "Not.h"
 #include "Imply.h"
 #include "Bicondition.h"
-#include "StringToSymbol.h"
+#include "KnowledgeModel.h"
+#include "TruthTable.h"
+#include "FileReader.h"

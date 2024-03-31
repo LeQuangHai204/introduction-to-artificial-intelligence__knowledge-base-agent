@@ -5,12 +5,18 @@
 
 class Bicondition : public Symbol
 {
-private:
-	Sentence* sentences[2];
-
 public:
-	Bicondition(Sentence* s1, Sentence* s2) :
-		sentences { s1, s2 } 
+	const Sentence* const sentences[2];
+
+	Bicondition(const Sentence* s1, const Sentence* s2) : Symbol((
+		(*s1 < *s2 ? s1 : s2)->isSymbol() ? "(" : "")
+		+ (*s1 < *s2 ? s1 : s2)->getDescription()
+		+ ((*s1 < *s2 ? s1 : s2)->isSymbol() ? ")" : "")
+		+ "<=>"
+		+ ((*s1 < *s2 ? s2 : s1)->isSymbol() ? "(" : "")
+		+ (*s1 < *s2 ? s2 : s1)->getDescription()
+		+ ((*s1 < *s2 ? s2 : s1)->isSymbol() ? ")" : "")),
+		sentences { *s1 < *s2 ? s1 : s2,  *s1 < *s2 ? s2 : s1 }
 	{
 		if (!s1 || !s2)
 		{
@@ -18,20 +24,21 @@ public:
 		}
 	}
 
-	std::string getDescription() const override
+	~Bicondition()
 	{
-		return (sentences[0]->isSymbol() ? "(" : "")
-			+ sentences[0]->getDescription()
-			+ (sentences[0]->isSymbol() ? ")" : "")
-			+ " <=> "
-			+ (sentences[1]->isSymbol() ? "(" : "")
-			+ sentences[1]->getDescription()
-			+ (sentences[1]->isSymbol() ? ")" : "");
+#ifdef TEST
+		std::cout << "Bicon deleting: " << getDescription() << "\n";
+#endif
 	}
 
-	bool getValue() const override
+	bool evaluate() const override
 	{
-		return sentences[0]->getValue() == sentences[1]->getValue();
+		return sentences[0]->evaluate() == sentences[1]->evaluate();
+	}
+
+	size_t atomicCount() const override
+	{
+		return sentences[0]->atomicCount() + sentences[1]->atomicCount();
 	}
 
 	bool operator==(const Sentence& other) const override
@@ -43,8 +50,6 @@ public:
 	bool operator==(const Bicondition& other) const
 	{
 		return (sentences[0] == other.sentences[0]
-			&& sentences[1] == other.sentences[1])
-			|| (sentences[1] == other.sentences[0]
-			&& sentences[0] == other.sentences[1]);
+			&& sentences[1] == other.sentences[1]);
 	}
 };

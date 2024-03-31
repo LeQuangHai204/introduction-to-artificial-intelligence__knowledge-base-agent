@@ -5,12 +5,18 @@
 
 class Imply : public Symbol
 {
-private:
-	Sentence* antecedent;
-	Sentence* consequence;
-
 public:
-	Imply(Sentence* antecedent, Sentence* consequence) :
+	const Sentence* const antecedent;
+	const Sentence* const consequence;
+
+	Imply(const Sentence* antecedent, const Sentence* consequence) : Symbol((
+		antecedent->isSymbol() ? "(" : "")
+		+ antecedent->getDescription()
+		+ (antecedent->isSymbol() ? ")" : "")
+		+ "=>"
+		+ (consequence->isSymbol() ? "(" : "")
+		+ consequence->getDescription()
+		+ (consequence->isSymbol() ? ")" : "")),
 		antecedent(antecedent), consequence(consequence)
 	{
 		if (!antecedent || !consequence)
@@ -19,20 +25,21 @@ public:
 		}
 	}
 
-	std::string getDescription() const override
+	~Imply()
 	{
-		return (antecedent->isSymbol() ? "(" : "") 
-			+ antecedent->getDescription()
-			+ (antecedent->isSymbol() ? ")" : "")
-			+ " => " 
-			+ (consequence->isSymbol() ? "(" : "")
-			+ consequence->getDescription()
-			+ (consequence->isSymbol() ? ")" : "");
+#ifdef TEST
+		std::cout << "Imply deleting: " << getDescription() << "\n";
+#endif
 	}
 
-	bool getValue() const override
+	bool evaluate() const override
 	{
-		return !antecedent->getValue() || consequence->getValue();
+		return !antecedent->evaluate() || consequence->evaluate();
+	}
+
+	size_t atomicCount() const override
+	{
+		return antecedent->atomicCount() + consequence->atomicCount();
 	}
 
 	bool operator==(const Sentence& other) const override

@@ -5,11 +5,13 @@
 
 class Not : public Symbol
 {
-private:
-	Sentence* sentence;
-
 public:
-	Not(Sentence* sentence) : sentence(sentence) 
+	const Sentence* sentence;
+
+	Not(const Sentence* sentence) : Symbol(sentence->isSymbol() 
+		? "~(" + sentence->getDescription() + ")" 
+		: "~" + sentence->getDescription()), 
+		sentence(sentence)
 	{
 		if (!sentence)
 		{
@@ -17,16 +19,21 @@ public:
 		}
 	}
 
-	std::string getDescription() const override
+	~Not()
 	{
-		if (sentence->isSymbol()) return
-			"~ (" + sentence->getDescription() + ")";
-		return "~ " + sentence->getDescription();
+#ifdef TEST
+		std::cout << "Not deleting: " << getDescription() << "\n";
+#endif
 	}
 
-	bool getValue() const override
+	bool evaluate() const override
 	{
-		return !sentence->getValue();
+		return !sentence->evaluate();
+	}
+
+	size_t atomicCount() const override
+	{
+		return sentence->atomicCount();
 	}
 
 	bool operator==(const Sentence& other) const override

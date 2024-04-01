@@ -13,17 +13,25 @@ public:
 
 	And(std::set<const Sentence*>&& sentences) : Symbol
 		(
-			std::accumulate(sentences.begin(), sentences.end(), std::string(),
-				[](std::string&& result, const Sentence* sentence)
-				{
-					if (!sentence) throw std::domain_error("Symbol contain NULL sentence");
-					if (sentence->isSymbol()) result += "(";
-					result += sentence->getDescription();
-					if (sentence->isSymbol()) result += ")";
-					result += "&&";
-					return std::move(result);
-				}
-			) + std::string("\b\b  \b")
+			[](std::set<const Sentence*>* set) -> std::string
+			{
+				std::string result = std::accumulate
+				(
+					set->begin(), set->end(), std::string(),
+					[](std::string&& result, const Sentence* sentence)
+					{
+						if (!sentence) throw std::domain_error(
+							"Symbol contains NULL");
+						if (sentence->isSymbol()) result += "(";
+						result += sentence->getDescription();
+						if (sentence->isSymbol()) result += ")";
+						result += "&";
+						return std::move(result);
+					}
+				);
+				return result.substr(0, result.size() - 1);
+			}
+			(&sentences)
 		),
 		sentences(std::move(sentences))
 	{
@@ -60,6 +68,11 @@ public:
 		}
 
 		return result;
+	}
+
+	bool contains(const Sentence* sentence) const
+	{
+		return sentences.contains(sentence);
 	}
 
 	bool operator==(const Sentence& other) const override

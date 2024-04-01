@@ -9,14 +9,14 @@ public:
 	const Sentence* const sentences[2];
 
 	Bicondition(const Sentence* s1, const Sentence* s2) : Symbol((
-		(*s1 < *s2 ? s1 : s2)->isSymbol() ? "(" : "")
-		+ (*s1 < *s2 ? s1 : s2)->getDescription()
-		+ ((*s1 < *s2 ? s1 : s2)->isSymbol() ? ")" : "")
+		   (s1->getDescription() < s2->getDescription() ? s1 : s2)->isSymbol() ? "(" : "")
+		+  (s1->getDescription() < s2->getDescription() ? s1 : s2)->getDescription()
+		+ ((s1->getDescription() < s2->getDescription() ? s1 : s2)->isSymbol() ? ")" : "")
 		+ "<=>"
-		+ ((*s1 < *s2 ? s2 : s1)->isSymbol() ? "(" : "")
-		+ (*s1 < *s2 ? s2 : s1)->getDescription()
-		+ ((*s1 < *s2 ? s2 : s1)->isSymbol() ? ")" : "")),
-		sentences { *s1 < *s2 ? s1 : s2,  *s1 < *s2 ? s2 : s1 }
+		+ ((s1->getDescription() < s2->getDescription() ? s2 : s1)->isSymbol() ? "(" : "")
+		+  (s1->getDescription() < s2->getDescription() ? s2 : s1)->getDescription()
+		+ ((s1->getDescription() < s2->getDescription() ? s2 : s1)->isSymbol() ? ")" : "")),
+		sentences { s1->getDescription() < s2->getDescription() ? s1 : s2,  s1->getDescription() < s2->getDescription() ? s2 : s1 }
 	{
 		if (!s1 || !s2)
 		{

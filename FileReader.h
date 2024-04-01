@@ -14,7 +14,7 @@ public:
 	static std::pair<std::vector<std::string>, std::string> readFile(int argc, char* argv[])
 	{
 #ifdef RUN_ON_VISUALSTUDIO
-            std::ifstream inputFile("test_genericKB.txt");
+            std::ifstream inputFile("test_HornKB.txt");
 #endif  // RUN_ON_VISUALSTUDIO
 
 #ifdef RUN_ON_TERMINAL

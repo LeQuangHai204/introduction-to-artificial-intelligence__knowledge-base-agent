@@ -7,9 +7,9 @@
 #include <stack>
 #include <set>
 #include <tuple>
+#include <unordered_map>
 
 #include "Symbol.h"
-#include <unordered_map>
 
 class KnowledgeModel
 {
@@ -319,7 +319,7 @@ public:
                         if (iter != atomicSentences.end()) set.insert(*iter);
                         else throw std::logic_error("Symbol not found");
                     }
-                }
+                 }
 
                 compoundSentences.insert(new And(std::move(set)));
             }

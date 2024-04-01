@@ -7,4 +7,6 @@
 #include "Bicondition.h"
 #include "KnowledgeModel.h"
 #include "TruthTable.h"
+#include "ForwardChaining.h"
+#include "BackwardChaining.h"
 #include "FileReader.h"

@@ -70,6 +70,11 @@ public:
         return description;
     }
 
+    bool getValue() const
+    {
+        return value;
+    }
+
     virtual bool evaluate() const
     {
         return value;
@@ -122,6 +127,8 @@ namespace std
             else return lhs->getDescription() < rhs->getDescription(); 
         }
     };
+     
+    // ----------------------------------------------------------------------------
 
     template <>
     struct hash<Sentence*>

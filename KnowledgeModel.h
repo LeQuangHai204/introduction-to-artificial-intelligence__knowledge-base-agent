@@ -14,7 +14,13 @@
 class KnowledgeModel
 {
 private:
-    static std::unordered_map<std::string, int> operatorPrecedence;
+    static inline std::unordered_map<std::string, int> operatorPrecedence = {
+        {"~", 1},
+        {"&", 2},
+        {"||", 3},
+        {"=>", 4},
+        {"<=>", 5}
+    };;
 
     static bool isOperator(const std::string& token) 
     {
@@ -429,12 +435,4 @@ public:
         atomicSentences.clear();
         compoundSentences.clear();
     }
-};
-
-std::unordered_map<std::string, int> KnowledgeModel::operatorPrecedence = {
-    {"~", 1},
-    {"&", 2},
-    {"||", 3},
-    {"=>", 4},
-    {"<=>", 5}
 };

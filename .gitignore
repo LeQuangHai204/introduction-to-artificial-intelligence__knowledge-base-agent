@@ -4,8 +4,5 @@
 x64/
 x32/
 
-*.sln
-*.vcxproj
-*.vcxproj.filters
-*.vcxproj.user
+
 *.exe

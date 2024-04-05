@@ -6,11 +6,13 @@
 
 
 
-// ------------------------------- NOW IT WORKS !!!!!!!!
-// ------------------------------- RUN AGAIN PLEASE 
-// ------------------------------- BEGGINGGGGGGGGGGGGGGGG
-
-
+// ------------------------------- NOW IT WORKS !!!!!!!! -----------------
+// ------------------------------- RUN AGAIN PLEASE ----------------------
+// ------------------------------- BEGGINGGGGGGGGGGGGGGGG ----------------
+// ------------------------------- BEGGINGGGGGGGGGGGGGGGG ----------------
+// ------------------------------- BEGGINGGGGGGGGGGGGGGGG ----------------
+// ------------------------------- BEGGINGGGGGGGGGGGGGGGG ----------------
+// ------------------------------- BEGGINGGGGGGGGGGGGGGGG ----------------
 
 class BackwardChaining
 {
@@ -39,8 +41,6 @@ private:
 
 	bool trackClause(const Sentence* query)
 	{
-		printGoals();
-
 		if (goals.empty()) return false;
 		goals.pop();
 

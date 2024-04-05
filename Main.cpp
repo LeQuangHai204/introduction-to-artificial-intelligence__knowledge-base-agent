@@ -49,6 +49,7 @@ int main(int argc, char* argv[])
     
     
     auto [knowledge, query] = FileReader::readFile(argc, argv);
+    if (query == "") return 1;
     KnowledgeModel knowledgeModel(knowledge, query);
 
 #ifdef TEST
@@ -56,24 +57,33 @@ int main(int argc, char* argv[])
     KnowledgeModel copy(knowledgeModel);
 #endif // TEST
 
+    try {
+
 #ifdef TRUTH_TABLE
-    TruthTable truthTable(knowledgeModel);
-    std::cout << "\nQuery result: \n";
-    bool result = truthTable.execute();
-    std::cout << "\nIs query true in all world?  " << (result ? "YES" : "NO") << "\n";
+        TruthTable truthTable(knowledgeModel);
+        std::cout << "\nQuery result: \n";
+        bool result = truthTable.execute();
+        std::cout << "\nIs query true in all world?  "
+            << (result ? ("YES: " + std::to_string(truthTable.getCount())) : "NO") << "\n";
 #endif // TRUTH_TABLE
 
 #ifdef FORWARD_CHAINING
-    ForwardChaining fwc(knowledgeModel);
-    bool result = fwc.execute();
-    std::cout << "\nIs query true?  " << (result ? "YES" : "NO") << "\n";
+        ForwardChaining fwc(knowledgeModel);
+        bool result = fwc.execute();
+        std::cout << "\nIs query true?  " << (result ? "YES" : "NO") << "\n";
 #endif // FORWARD_CHAINING
 
 #ifdef BACKWARD_CHAINING
-    BackwardChaining bwc(knowledgeModel);
-    bool result = bwc.execute();
-    std::cout << "\nIs query true?  " << (result ? "YES" : "NO") << "\n";
+        BackwardChaining bwc(knowledgeModel);
+        bool result = bwc.execute();
+        std::cout << "\nIs query true?  " << (result ? "YES" : "NO") << "\n";
 #endif // FORWARD_CHAINING
+
+    }
+    catch (...)
+    {
+        std::cout << "Caught an exception!" << std::endl;
+    }
 }
 
 

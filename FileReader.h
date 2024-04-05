@@ -14,21 +14,21 @@ public:
 	static std::pair<std::vector<std::string>, std::string> readFile(int argc, char* argv[])
 	{
 #ifdef RUN_ON_VISUALSTUDIO
-            std::ifstream inputFile("test_HornKB.txt");
+        std::ifstream inputFile("test2.txt");
 #endif  // RUN_ON_VISUALSTUDIO
 
 #ifdef RUN_ON_TERMINAL
         if (argc < 3)
         {
             std::cerr << "Arguments missing." << std::endl;
-            return 1;
+            return std::make_pair(std::vector(), "");
         }
 
         std::ifstream inputFile(argv[2]);
         if (!inputFile.is_open())
         {
             std::cerr << "Error opening file!" << std::endl;
-            return 1;
+            return std::make_pair(std::vector(), "");
         }
 #endif  // RUN_ON_TERMINAL
 

@@ -8,6 +8,7 @@ class TruthTable
 {
 private:
 	const KnowledgeModel* knowledgeModel;
+	size_t count;
 
 	void printHeader()
 	{
@@ -86,11 +87,17 @@ private:
 			{
 				if (!sentence->evaluate()) 
 				{
+					count++;
 					return true;
 				}
 			}
 
-			return knowledgeModel->query->evaluate();
+			if (knowledgeModel->query->evaluate() == true)
+			{
+				count++;
+				return true;
+			}
+			return false;
 		}
 		
 		symbols[index] = 1;
@@ -104,12 +111,17 @@ private:
 
 public:
 	TruthTable(const KnowledgeModel& knowledgeModel) : 
-		knowledgeModel(&knowledgeModel)
+		knowledgeModel(&knowledgeModel), count(0)
 	{ }
 
 	bool execute()
 	{
 		printHeader();
 		return checkTable(std::vector<int>(knowledgeModel->atomicSentences.size(), -1), 0);
+	}
+
+	size_t getCount()
+	{
+		return count;
 	}
 };

@@ -232,6 +232,7 @@ private:
     {
         for (const std::string& clause : knowledge)
         {
+            std::cout << clause << "\n";
             const Sentence* sentence = postfixToSymbol(infixToPostfix(
                 tokenizeInfix(clause)));
             completeSentences.insert(sentence);

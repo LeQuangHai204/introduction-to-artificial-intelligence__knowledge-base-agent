@@ -11,12 +11,34 @@ private:
 	std::stack<const Sentence*> goals;
 	std::stack<const Sentence*> solution;
 
+	void printGoals()
+	{
+		std::cout << "Stack contain: ";
+		std::stack<const Sentence*> tempStack;
+		while (!goals.empty()) {
+			const Sentence* element = goals.top();
+			std::cout << element->getDescription() << " ";
+			tempStack.push(element);
+			goals.pop();
+		}
+		while (!tempStack.empty()) {
+			auto element = tempStack.top();
+			goals.push(element);
+			tempStack.pop();
+		}
+		std::cout << "\n";
+	}
+
 	bool trackClause(const Sentence* query)
 	{
+		printGoals();
+
+		if (goals.empty()) return false;
 		goals.pop();
 
 		for(const Sentence* sentence : knowledgeModel->compoundSentences)
 		{
+			std::cout << "Sentence is: " << sentence->getDescription() << "\n";
 			const Imply* placeholder = dynamic_cast<const Imply*>(sentence);
 
 			// placeholder is not imply proposition
@@ -45,19 +67,20 @@ private:
 					goals.push(placeholder->antecedent);
 
 					solution.push(placeholder);
+
+					printGoals();
 					return true;
 				}
 
 				solution.push(placeholder);
+				
+				printGoals();
 				return true;
 			}
 
 			// the antecedent is conjuction
 			const And* hornAntecedent = dynamic_cast<const And*>(placeholder->antecedent);
-			if (!hornAntecedent)
-			{
-				throw std::logic_error("Not Horn clause");
-			}
+			if (hornAntecedent == nullptr) throw std::logic_error("Not Horn clause");
 
 			for (const Sentence* s : hornAntecedent->sentences)
 			{
@@ -65,13 +88,21 @@ private:
 				{
 					std::cout << placeholder->antecedent->getDescription() << " is added as new goal\n";
 					goals.push(s);
+
+					std::cout << placeholder->getDescription() << "Is added to solution\n";
 					solution.push(placeholder);
+
+					printGoals();
 					return true;
 				}
 			}
 		}
 
-		solution.pop();
+		if(!solution.empty()) 
+		{
+			std::cout << solution.top()->getDescription() << "Is popped to solution\n";
+			solution.pop();
+		}
 		return false;
 	}
 
@@ -103,6 +134,7 @@ public:
 		goals.push(knowledgeModel->query);
 		while(!goals.empty())
 		{
+			printGoals();
 			if (!trackClause(goals.top()))
 			{
 				return false;

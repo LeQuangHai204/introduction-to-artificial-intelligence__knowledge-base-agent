@@ -87,7 +87,6 @@ private:
 			{
 				if (!sentence->evaluate()) 
 				{
-					count++;
 					return true;
 				}
 			}

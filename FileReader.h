@@ -14,7 +14,7 @@ public:
 	static std::pair<std::vector<std::string>, std::string> readFile(int argc, char* argv[])
 	{
 #ifdef RUN_ON_VISUALSTUDIO
-        std::ifstream inputFile("test2.txt");
+        std::ifstream inputFile("test4.txt");
 #endif  // RUN_ON_VISUALSTUDIO
 
 #ifdef RUN_ON_TERMINAL

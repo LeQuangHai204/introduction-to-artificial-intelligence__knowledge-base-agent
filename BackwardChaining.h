@@ -4,6 +4,14 @@
 #include "And.h"
 #include "Imply.h"
 
+
+
+// ------------------------------- NOW IT WORKS !!!!!!!!
+// ------------------------------- RUN AGAIN PLEASE 
+// ------------------------------- BEGGINGGGGGGGGGGGGGGGG
+
+
+
 class BackwardChaining
 {
 private:
@@ -78,23 +86,30 @@ private:
 				return true;
 			}
 
+
 			// the antecedent is conjuction
 			const And* hornAntecedent = dynamic_cast<const And*>(placeholder->antecedent);
 			if (hornAntecedent == nullptr) throw std::logic_error("Not Horn clause");
 
+			bool temp = true;
 			for (const Sentence* s : hornAntecedent->sentences)
 			{
 				if (!s->getValue())
 				{
+					temp = false;
 					std::cout << placeholder->antecedent->getDescription() << " is added as new goal\n";
 					goals.push(s);
 
 					std::cout << placeholder->getDescription() << "Is added to solution\n";
 					solution.push(placeholder);
-
-					printGoals();
-					return true;
 				}
+			}
+
+
+			if (temp == true)
+			{
+				solution.push(placeholder);
+				return true;
 			}
 		}
 
@@ -107,8 +122,7 @@ private:
 	}
 
 public:
-	BackwardChaining(const KnowledgeModel& knowledgeModel) :
-		knowledgeModel(&knowledgeModel)
+	BackwardChaining(const KnowledgeModel& knowledgeModel) : knowledgeModel(&knowledgeModel)
 	{
 		for (const Sentence* sentence : knowledgeModel.compoundSentences)
 			if (!(dynamic_cast<const Imply*>(sentence)

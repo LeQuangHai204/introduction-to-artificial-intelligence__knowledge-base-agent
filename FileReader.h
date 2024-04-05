@@ -21,14 +21,14 @@ public:
         if (argc < 3)
         {
             std::cerr << "Arguments missing." << std::endl;
-            return std::make_pair(std::vector(), "");
+            return std::make_pair(std::vector<std::string>{}, "");
         }
 
         std::ifstream inputFile(argv[2]);
         if (!inputFile.is_open())
         {
             std::cerr << "Error opening file!" << std::endl;
-            return std::make_pair(std::vector(), "");
+            return std::make_pair(std::vector<std::string>{}, "");
         }
 #endif  // RUN_ON_TERMINAL
 

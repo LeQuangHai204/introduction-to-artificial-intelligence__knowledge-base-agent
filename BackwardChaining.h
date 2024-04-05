@@ -43,6 +43,7 @@ private:
 	{
 		if (goals.empty()) return false;
 		goals.pop();
+		bool foundNextGoal = false;
 
 		for(const Sentence* sentence : knowledgeModel->compoundSentences)
 		{
@@ -91,17 +92,16 @@ private:
 			const And* hornAntecedent = dynamic_cast<const And*>(placeholder->antecedent);
 			if (hornAntecedent == nullptr) throw std::logic_error("Not Horn clause");
 
+			std::cout << placeholder->antecedent->getDescription() << " is conjuction\n";
 			bool temp = true;
 			for (const Sentence* s : hornAntecedent->sentences)
 			{
 				if (!s->getValue())
 				{
 					temp = false;
-					std::cout << placeholder->antecedent->getDescription() << " is added as new goal\n";
+					std::cout << s->getDescription() << " is added as new goal\n";
 					goals.push(s);
-
-					std::cout << placeholder->getDescription() << "Is added to solution\n";
-					solution.push(placeholder);
+					foundNextGoal = true;
 				}
 			}
 
@@ -111,14 +111,19 @@ private:
 				solution.push(placeholder);
 				return true;
 			}
+			
+			std::cout << placeholder->getDescription() << " is added to solution\n";
+			solution.push(placeholder);
+			break;
 		}
 
-		if(!solution.empty()) 
+		if(!solution.empty() && foundNextGoal == false) 
 		{
-			std::cout << solution.top()->getDescription() << "Is popped to solution\n";
+			std::cout << solution.top()->getDescription() << "Is popped\n";
 			solution.pop();
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 public:

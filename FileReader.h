@@ -24,7 +24,7 @@ public:
             return std::make_pair(std::vector<std::string>{}, "");
         }
 
-        std::ifstream inputFile(argv[2]);
+        std::ifstream inputFile(argv[1]);
         if (!inputFile.is_open())
         {
             std::cerr << "Error opening file!" << std::endl;

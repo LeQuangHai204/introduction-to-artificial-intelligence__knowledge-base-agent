@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
 
     try {
 
-        if (argv[2] == "TT")
+        if (std::string(argv[2]) == "TT")
         {
             TruthTable truthTable(knowledgeModel);
             std::cout << "\nQuery result: \n";
@@ -21,13 +21,13 @@ int main(int argc, char* argv[])
             std::cout << "\nIs query true in all world?  "
                 << (result ? ("YES: " + std::to_string(truthTable.getCount())) : "NO") << "\n";
         }
-        else if (argv[2] == "FC")
+        else if (std::string(argv[2]) == "FC")
         {
             ForwardChaining fwc(knowledgeModel);
             bool result = fwc.execute();
             std::cout << "\nIs query true?  " << (result ? "YES" : "NO") << "\n";
         }
-        else if (argv[2] == "BC")
+        else if (std::string(argv[2]) == "BC")
         {
             BackwardChaining bwc(knowledgeModel);
             bool result = bwc.execute();

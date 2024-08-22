@@ -28,18 +28,18 @@ g++ -std=c++20 -o Program.out Main.cpp
 
 ## Example
 
-Given the following content in test1.txt:
+Given the following content in test2.txt:
 
 TELL
 
 ```
-p2 => p3; p3 => p1; c => e; b & e => f; f & g => h; p1 => d; p1 & p3 => c; a; b; p2;
+a => b; c&b => d; e&f => g; h => i; a; c; e; f;
 ```
 
 ASK
 
 ```
-d
+d&g
 ```
 
 Run the inference engine using Backward Chaining:

@@ -1,39 +1,65 @@
-You need to implement an inference engine for propositional logic in software based on the Truth Table (TT) checking, and Backward Chaining (BC) and Forward Chaining (FC) algorithms. Your inference engine will take as arguments a Horn-form Knowledge Base KB and a query q which is a proposition symbol and determine whether q can be entailed from KB. You will also need to write a report about how your program works with different knowledge bases and queries.
 
-The Truth Table Checking (TT) algorithm works with all types of knowledge bases. The Forward Chaining (FC) and Backward Chaining (BC) algorithms work with Horn-form knowledge bases. Given a knowledge base KB in Horn form (with TELL) and a query q which is a proposition symbol (with ASK), your program needs to answer whether or not q is entailed from KB using one of the three algorithms TT, or FC, or BC.
+## Inference Engine for Propositional Logic
+This project implements an inference engine for propositional logic, utilizing the Truth Table (TT) checking, Forward Chaining (FC), and Backward Chaining (BC) algorithms. The engine is designed to determine whether a given query can be entailed from a Horn-form Knowledge Base (KB) using one of the three algorithms. The project is written in C++ with best practices of Object-Oriented Programming (OOP) and design patterns.
 
-The problems are stored in simple text files consisting of both the knowledge base and the query: 
-- The knowledge base follows the keyword TELL and consists of Horn clauses separated by
-semicolons.
-- The query follows the keyword ASK and consists of a proposition symbol.
-For example, the following could be the content of one of the test files (test1.txt):
+## Introduction
+The inference engine takes as input a Knowledge Base (KB) in Horn form and a query (q) as a proposition symbol. It then determines whether the query can be entailed from the KB using one of three algorithms: Truth Table checking (TT), Forward Chaining (FC), or Backward Chaining (BC).
+
+## Features
+Truth Table Checking (TT): Works with all types of knowledge bases.
+Forward Chaining (FC): Works with Horn-form knowledge bases and finds all propositional symbols entailed from KB.
+Backward Chaining (BC): Works with Horn-form knowledge bases and finds the propositional symbols required to entail the query.
+Command-Line Interface: Supports batch testing through a simple command-line interface.
+Object-Oriented Design: Implements OOP best practices and design patterns to ensure modularity, reusability, and maintainability.
+
+## Usage
+To run the inference engine, use the following command:
+```
+> iengine <method> <filename>
+```
+method: Specifies the algorithm to use (TT for Truth Table checking, FC for Forward Chaining, or BC for Backward Chaining).
+filename: The path to the text file containing the problem (knowledge base and query).
+
+## Example
+Given the following content in test1.txt:
+
 TELL
-p2=> p3; p3 => p1; c => e; b&e => f; f&g => h; p1=>d; p1&p3 => c; a; b; p2;
+```
+p2 => p3; p3 => p1; c => e; b & e => f; f & g => h; p1 => d; p1 & p3 => c; a; b; p2;
+```
 ASK
+```
 d
+```
 
-Your program needs to operate in a simple command-line form to support batch testing. This can be
-accomplished with a simple DOS .bat (batch) file if needed. Below is an example of how your program will be
-run: 
-> iengine method filename
-where iengine is your .exe file or a .bat (batch) file that calls your program with the parameters, method
-can be either TT (for Truth Table checking), or FC (for Forward Chaining), or BC (for Backward Chaining) to
-specify the algorithm, and filename is for the text file consisting of the problem.
-For instance:
+Run the inference engine using Forward Chaining:
+```
 > iengine FC test1.txt
-Standard output is an answer of the form YES or NO, depending on whether the ASK(ed) query q follows
-from the TELL(ed) knowledge base KB. When the method is TT and the answer is YES, it should be
-followed by a colon (:) and the number of models of KB. When the method is FC or BC and the answer is
-YES, it should be followed by a colon (:) and the list of propositional symbols entailed from KB that has been
-found during the execution of the specified algorithm.
-For example, running iengine with method TT on the example test1.txt file should produce the
-following output:
-> YES: 3
-On the other hand, when I run my implementation of iengine with method FC on the example test1.txt
-it produces the following output:
-> YES: a, b, p2, p3, p1, d
-Note that your implementation might produce a different output and it would still be correct, depending on the
-order of the sentences in the knowledge base. I’ll check that carefully to ensure that you won’t be
-disadvantaged if your results don’t look exactly the same as my results.
-And running iengine with method BC on the example test file above should produce the following output:
-> YES: p2, p3, p1, d
+```
+Expected output:
+```
+YES: a, b, p2, p3, p1, d
+```
+Algorithms
+Truth Table (TT) Checking
+Examines all possible models of the knowledge base to determine if the query is true in all models.
+Forward Chaining (FC)
+Iteratively infers new facts until the query is found or no more inferences can be made.
+Backward Chaining (BC)
+Recursively attempts to prove the query by proving all premises of the rules that conclude the query.
+
+## Installation
+Clone the repository:
+```
+git clone https://github.com/yourusername/inference-engine.git
+```
+Build the project using Makefile:
+```
+cd inference-engine
+make
+```
+Run the inference engine as described in the Usage section.
+
+## Contributing
+Contributions are welcome! Please fork this repository and submit a pull request with your improvements.
+

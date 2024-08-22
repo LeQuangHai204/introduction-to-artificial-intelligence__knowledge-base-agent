@@ -62,6 +62,7 @@ public:
             }
             break;
         }
+        
         while (std::getline(inputFile, line))
         {
             if (line != "ASK")

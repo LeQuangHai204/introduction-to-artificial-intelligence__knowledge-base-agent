@@ -5,12 +5,11 @@
 class Symbol : public Sentence
 {
 protected:
-	Symbol(std::string&& description) : Sentence(std::move(description)) 
-	{ }
+    Symbol(std::string&& description) : Sentence(std::move(description)) { }
 
-	virtual ~Symbol() = default;
+    virtual ~Symbol() = default;
 
-	virtual bool isSymbol() const override { return true; }
+    virtual bool isSymbol() const override { return true; }
 
-	friend struct std::hash<Symbol*>;
+    friend struct std::hash<Symbol*>;
 };

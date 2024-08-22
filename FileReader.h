@@ -1,21 +1,21 @@
 #pragma once
 
-#include <utility>
+#include "Sentence.h"
+
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <utility>
 #include <vector>
-
-#include "Sentence.h"
 
 class FileReader
 {
 public:
-	static std::pair<std::vector<std::string>, std::string> readFile(int argc, char* argv[])
-	{
+    static std::pair<std::vector<std::string>, std::string> readFile(int argc, char* argv[])
+    {
 #ifdef RUN_ON_VISUALSTUDIO
         std::ifstream inputFile("test4.txt");
-#endif  // RUN_ON_VISUALSTUDIO
+#endif // RUN_ON_VISUALSTUDIO
 
 #ifdef RUN_ON_TERMINAL
         if (argc < 3)
@@ -30,7 +30,7 @@ public:
             std::cerr << "Error opening file!" << std::endl;
             return std::make_pair(std::vector<std::string>{}, "");
         }
-#endif  // RUN_ON_TERMINAL
+#endif // RUN_ON_TERMINAL
 
         std::string line;
         std::vector<std::string> knowledge;
@@ -52,17 +52,17 @@ public:
             {
                 // Remove all spaces in clause
                 part.erase(
-                    std::remove_if(part.begin(),
+                    std::remove_if(
+                        part.begin(),
                         part.end(),
-                        [](char ch)
-                        { return std::isspace(static_cast<unsigned char>(ch)); }),
+                        [](char ch) { return std::isspace(static_cast<unsigned char>(ch)); }),
                     part.end());
 
                 if (!part.empty()) knowledge.push_back(part);
             }
             break;
         }
-        
+
         while (std::getline(inputFile, line))
         {
             if (line != "ASK")
@@ -77,12 +77,13 @@ public:
         }
 
         // Remove all spaces in query
-        query.erase(std::remove_if(query.begin(),
-            query.end(),
-            [](char ch)
-            { return std::isspace(static_cast<unsigned char>(ch)); }),
+        query.erase(
+            std::remove_if(
+                query.begin(),
+                query.end(),
+                [](char ch) { return std::isspace(static_cast<unsigned char>(ch)); }),
             query.end());
 
         return std::make_pair(knowledge, query);
-	}
+    }
 };

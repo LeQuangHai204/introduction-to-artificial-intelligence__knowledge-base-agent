@@ -1,40 +1,30 @@
 #pragma once
 
-#include <iostream>
-#include <string>
-#include <vector>
+#include "Symbol.h"
+
 #include <cctype>
-#include <stack>
+#include <iostream>
 #include <set>
+#include <stack>
+#include <string>
 #include <tuple>
 #include <unordered_map>
-
-#include "Symbol.h"
+#include <vector>
 
 class KnowledgeModel
 {
 private:
-    static inline std::unordered_map<std::string, int> operatorPrecedence = {
-        {"~", 1},
-        {"&", 2},
-        {"||", 3},
-        {"=>", 4},
-        {"<=>", 5}
-    };;
+    static inline std::unordered_map<std::string, int> operatorPrecedence =
+        {{"~", 1}, {"&", 2}, {"||", 3}, {"=>", 4}, {"<=>", 5}};
 
-    static bool isOperator(const std::string& token) 
+    static bool isOperator(const std::string& token)
     {
         return operatorPrecedence.find(token) != operatorPrecedence.end();
     }
 
-    static bool isOperator(std::string&& token)
-    {
-        return operatorPrecedence.find(token) != operatorPrecedence.end();
-    }
+    static bool isOperator(std::string&& token) { return operatorPrecedence.find(token) != operatorPrecedence.end(); }
 
-    static bool isHigherPrecedence(
-        const std::string& op1,
-        const std::string& op2) 
+    static bool isHigherPrecedence(const std::string& op1, const std::string& op2)
     {
         if (op1 == "(") return false;
         return operatorPrecedence[op1] < operatorPrecedence[op2];
@@ -93,14 +83,12 @@ private:
         return tokens;
     }
 
-
-    static std::vector<std::string> infixToPostfix(
-        const std::vector<std::string>& input)
+    static std::vector<std::string> infixToPostfix(const std::vector<std::string>& input)
     {
         std::stack<std::string> operatorStack;
         std::vector<std::string> postfix;
 
-        for (const std::string& token : input) 
+        for (const std::string& token : input)
         {
             if (token == "(")
             {
@@ -125,8 +113,7 @@ private:
             }
             else // Operator
             {
-                while (!operatorStack.empty() 
-                    && isHigherPrecedence(operatorStack.top(), token))
+                while (!operatorStack.empty() && isHigherPrecedence(operatorStack.top(), token))
                 {
                     postfix.push_back(operatorStack.top());
                     operatorStack.pop();
@@ -167,16 +154,12 @@ private:
             }
             else if (input[i] == "=>") // binary symbol
             {
-                temp = new Imply(
-                    stack[stack.size() - 2], 
-                    stack[stack.size() - 1]);
+                temp = new Imply(stack[stack.size() - 2], stack[stack.size() - 1]);
                 noOfArg = 2;
             }
             else if (input[i] == "<=>") // binary symbol
             {
-                temp = new Bicondition(
-                    stack[stack.size() - 2], 
-                    stack[stack.size() - 1]);
+                temp = new Bicondition(stack[stack.size() - 2], stack[stack.size() - 1]);
                 noOfArg = 2;
             }
             else if (input[i] == "&") // n-nary symbol
@@ -192,7 +175,7 @@ private:
                     std::make_move_iterator(stack.end() - noOfArg),
                     std::make_move_iterator(stack.end())));
             }
-            else  // "||" n-nary symbol
+            else // "||" n-nary symbol
             {
                 noOfArg = 2;
                 while (i + 1 < input.size() && input[i + 1] == "||")
@@ -208,56 +191,47 @@ private:
             }
 
             // remove the symbols used to construct the new symbol from the stack
-            for (size_t i = 0; i < noOfArg; i++) 
+            for (size_t i = 0; i < noOfArg; i++)
             {
                 stack.pop_back();
             }
-            
+
             // push output symbol to the stack
             //  - if there is a similar symbol to temp in set, delete temp
             //  - else insert temp to set
-            std::tie(iter, isNotDuplicated) = noOfArg 
-                ? compoundSentences.insert(temp)
-                : atomicSentences.insert(temp);
+            std::tie(iter, isNotDuplicated) = noOfArg ? compoundSentences.insert(temp) : atomicSentences.insert(temp);
             if (!isNotDuplicated) delete temp;
             stack.push_back(*iter);
         }
-        
+
         // return the main symbol
         return stack.back();
     }
 
-    void initialize(const std::vector<std::string>& knowledge,
-        const std::string& questionClause)
+    void initialize(const std::vector<std::string>& knowledge, const std::string& questionClause)
     {
         for (const std::string& clause : knowledge)
         {
             std::cout << clause << "\n";
-            const Sentence* sentence = postfixToSymbol(infixToPostfix(
-                tokenizeInfix(clause)));
+            const Sentence* sentence = postfixToSymbol(infixToPostfix(tokenizeInfix(clause)));
             completeSentences.insert(sentence);
         }
 
-        query = postfixToSymbol(infixToPostfix(
-            tokenizeInfix(questionClause)));
+        query = postfixToSymbol(infixToPostfix(tokenizeInfix(questionClause)));
 
 #ifdef DEVELOP
         std::cout << "\nAtomic Knowledge:" << std::endl;
-        for (const Sentence* elem : atomicSentences)
-            std::cout << elem->getDescription() << " ";
-        
+        for (const Sentence* elem : atomicSentences) std::cout << elem->getDescription() << " ";
+
         std::cout << "\n\nCompound Knowledge:" << std::endl;
-        for (const Sentence* elem : compoundSentences)
-            std::cout << elem->getDescription() << "\n";
+        for (const Sentence* elem : compoundSentences) std::cout << elem->getDescription() << "\n";
 
         std::cout << "\nComplete Knowledge:" << std::endl;
-        for (const Sentence* elem : completeSentences)
-            std::cout << elem->getDescription() << "; ";
-        
-        std::cout << "\n";
-#endif  // DEVELOP
-    }
+        for (const Sentence* elem : completeSentences) std::cout << elem->getDescription() << "; ";
 
+        std::cout << "\n";
+#endif // DEVELOP
+    }
 public:
     std::set<const Sentence*> atomicSentences;
     std::set<const Sentence*> compoundSentences;
@@ -265,8 +239,7 @@ public:
     const Sentence* query;
 
     // default constructor
-    KnowledgeModel(const std::vector<std::string>& knowledge,
-        const std::string& query)
+    KnowledgeModel(const std::vector<std::string>& knowledge, const std::string& query)
     {
         initialize(knowledge, query);
     }
@@ -281,8 +254,7 @@ public:
 
 #ifdef DEVELOP
         std::cout << "\nAtomic Knowledge:" << std::endl;
-        for (const Sentence* elem : atomicSentences)
-            std::cout << elem->getDescription() << " ";
+        for (const Sentence* elem : atomicSentences) std::cout << elem->getDescription() << " ";
 #endif
 
         for (const Sentence* sentence : other.compoundSentences)
@@ -291,7 +263,7 @@ public:
             std::set<const Sentence*> set;
             const Sentence* s1;
             const Sentence* s2;
-            
+
             const Not* notSentence;
             const And* andSentence;
             const Or* orSentence;
@@ -326,7 +298,7 @@ public:
                         if (iter != atomicSentences.end()) set.insert(*iter);
                         else throw std::logic_error("Symbol not found");
                     }
-                 }
+                }
 
                 compoundSentences.insert(new And(std::move(set)));
             }
@@ -366,7 +338,7 @@ public:
                     else throw std::logic_error("Symbol not found");
                 }
 
-                compoundSentences.insert(new Imply(s1,s2));
+                compoundSentences.insert(new Imply(s1, s2));
             }
             else if (biconSentence = dynamic_cast<const Bicondition*>(sentence))
             {
@@ -395,8 +367,7 @@ public:
 
 #ifdef DEVELOP
         std::cout << "\n\nCompound Knowledge:" << std::endl;
-        for (const Sentence* elem : compoundSentences)
-            std::cout << elem->getDescription() << "\n";
+        for (const Sentence* elem : compoundSentences) std::cout << elem->getDescription() << "\n";
 #endif
 
         for (const Sentence* sentence : other.completeSentences)
@@ -406,17 +377,16 @@ public:
             else
             {
                 iter = atomicSentences.find(sentence);
-                if (iter != atomicSentences.end())completeSentences.insert(*iter);
+                if (iter != atomicSentences.end()) completeSentences.insert(*iter);
                 else throw std::logic_error("Invalid type of sentence");
             }
         }
 
 #ifdef DEVELOP
         std::cout << "\nComplete Knowledge:" << std::endl;
-        for (const Sentence* elem : completeSentences)
-            std::cout << elem->getDescription() << "; ";
+        for (const Sentence* elem : completeSentences) std::cout << elem->getDescription() << "; ";
         std::cout << "\n";
-#endif  // DEVELOP
+#endif // DEVELOP
 
         auto iter = compoundSentences.find(other.query);
         if (iter != compoundSentences.end()) query = *iter;
